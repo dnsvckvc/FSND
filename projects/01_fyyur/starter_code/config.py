@@ -10,4 +10,5 @@ DEBUG = True
 
 
 # TODO IMPLEMENT DATABASE URL
-SQLALCHEMY_DATABASE_URI = '<Put your local database url>'
+# CHECK
+SQLALCHEMY_DATABASE_URI = 'postgres://dnsvckvc@localhost:5432/fyyur'
