@@ -7,8 +7,7 @@ cursor = connection.cursor()
 
 SQL_VENUES = '''
 INSERT INTO venues 
-      (id, 
-      name, 
+      (name, 
       city, 
       state, 
       address, 
@@ -16,8 +15,7 @@ INSERT INTO venues
       image_link, 
       facebook_link) 
     VALUES 
-      (%(id)s, 
-      %(name)s,
+      (%(name)s,
       %(city)s,
       %(state)s,
       %(address)s,
@@ -79,8 +77,7 @@ cursor.executemany(
 
 SQL_ARTISTS = '''
 INSERT INTO artists 
-      (id, 
-      name, 
+      (name, 
       city, 
       state, 
       phone, 
@@ -88,8 +85,7 @@ INSERT INTO artists
       image_link, 
       facebook_link) 
     VALUES 
-      (%(id)s, 
-      %(name)s,
+      (%(name)s,
       %(city)s,
       %(state)s,
       %(phone)s,
@@ -128,7 +124,7 @@ data_artists = [{'id': 1,
         'image_link':'https://anotherlink.ch',
         'facebook_link':'https://facebookdummylink.de'},
         {'id': 3, 
-        'name': 'The Wild Sax Band',
+        'name': 'Park Square Live Music & Coffee',
         'city': 'San Francisco',
         'state': 'California',
         'phone':'123444999',
@@ -149,7 +145,6 @@ cursor.executemany(
   SQL_ARTISTS, 
   data_artists
   )
-
 
 connection.commit()
 connection.close()
