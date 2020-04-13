@@ -34,6 +34,8 @@ migrate = Migrate(app, db)
 
 class Venue(db.Model):
     __tablename__ = 'venues'
+    __table_args__ = (db.UniqueConstraint('city', 'state', 'address', name='total_address'),
+                      db.UniqueConstraint('city', 'state', 'name', name='name_city_state'))
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
@@ -44,7 +46,7 @@ class Venue(db.Model):
     image_link = db.Column(db.String(500))
     facebook_link = db.Column(db.String(120))
 
-    shows = db.relationship('Show', backref='show_venue', lazy=True)
+    shows = db.relationship('Show', backref='show_venue', lazy=True, cascade = 'all, delete-orphan')
 
     # TODO: implement any missing fields, as a database migration using Flask-Migrate
 
@@ -52,7 +54,7 @@ class Artist(db.Model):
     __tablename__ = 'artists'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
+    name = db.Column(db.String, unique=True)
     city = db.Column(db.String(120))
     state = db.Column(db.String(120))
     phone = db.Column(db.String(120))
@@ -60,7 +62,7 @@ class Artist(db.Model):
     image_link = db.Column(db.String(500))
     facebook_link = db.Column(db.String(120))
 
-    shows = db.relationship('Show', backref='show_artist', lazy=True)
+    shows = db.relationship('Show', backref='show_artist', lazy=True, cascade='all, delete-orphan')
 
     # TODO: implement any missing fields, as a database migration using Flask-Migrate
 
@@ -70,8 +72,8 @@ class Show(db.Model):
   __tablename__ = 'shows'
 
   id = db.Column(db.Integer, primary_key=True)
-  venue = db.Column(db.Integer, db.ForeignKey('venues.id'), nullable=False)
-  artist = db.Column(db.Integer, db.ForeignKey('artists.id'), nullable=False)
+  venue = db.Column(db.Integer, db.ForeignKey('venues.id', ondelete="CASCADE"), nullable=False)
+  artist = db.Column(db.Integer, db.ForeignKey('artists.id', ondelete="CASCADE"), nullable=False)
   start_time = db.Column(db.DateTime, nullable=False)
 
 #----------------------------------------------------------------------------#
@@ -168,7 +170,7 @@ def show_venue(venue_id):
   output['facebook_link'] = venue.facebook_link
   output['seeking_talent'] = True
   output['seeking_description'] = 'Looking for fancy shows'
-  output['imagie_link'] = venue.image_link
+  output['image_link'] = venue.image_link
   output_past_shows = [] 
   output_upcoming_shows = []
   for show in shows_upcoming:
@@ -242,15 +244,17 @@ def delete_venue(venue_id):
   # SQLAlchemy ORM to delete a record. Handle cases where the session commit could fail.
   # Check
   try:
-    Venue.query.get(venue_id).delete()
+    Venue.query.filter_by(id=venue_id).delete()
     db.session.commit()
+    flash('Successful. Venue ' + venue_id + ' deleted.')
   except:
     db.session.rollback()
+    flash('An error occurred. Venue ' + ' could not be deleted.')
   finally:
     db.session.close()
   # BONUS CHALLENGE: Implement a button to delete a Venue on a Venue Page, have it so that
   # clicking that button delete it from the db then redirect the user to the homepage
-  return None
+  return redirect(url_for('index'))
 
 #  Artists
 #  ----------------------------------------------------------------
@@ -306,7 +310,7 @@ def show_artist(artist_id):
   output['facebook_link'] = artist.facebook_link
   output['seeking_venue'] = True
   output['seeking_description'] = 'Looking for fancy shows'
-  output['imagie_link'] = artist.image_link
+  output['image_link'] = artist.image_link
   output_past_shows = [] 
   output_upcoming_shows = []
   for show in shows_upcoming:
