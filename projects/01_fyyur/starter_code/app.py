@@ -372,12 +372,12 @@ def edit_artist_submission(artist_id):
     artist.facebook_link = form_input['facebook_link']
     db.session.commit()
     # on successful db insert, flash success
-    flash('Artist ' + artist_id + ' was successfully listed!')
+    #flash('Artist ' + str(artist_id) + ' was successfully listed!')
   # TODO: on unsuccessful db insert, flash an error instead.
   # Check
   except:
     db.session.rollback()
-    flash('An error occurred. Artist ' + artist_id + ' could not be updated.')
+    #flash('An error occurred. Artist ' + str(artist_id) + ' could not be updated.')
     # see: http://flask.pocoo.org/docs/1.0/patterns/flashing/
   finally:
     db.session.close()
