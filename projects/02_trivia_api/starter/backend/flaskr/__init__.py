@@ -20,6 +20,7 @@ def paginate_questions(request, selection):
 
     return current_questions
 
+
 def get_all_category_dict():
     categories = Category.query.all()
     category_dict = {}
@@ -28,6 +29,7 @@ def get_all_category_dict():
         category_dict[category.id] = category.type
 
     return category_dict
+
 
 def create_app(test_config=None):
     # create and configure the app
@@ -59,7 +61,6 @@ def create_app(test_config=None):
     '''
     @app.route('/categories')
     def retrieve_categories():
-        
         category_dict = get_all_category_dict()
 
         return jsonify({
@@ -168,7 +169,6 @@ def create_app(test_config=None):
         except:
             abort(422)
 
-
     '''
     @TODO:
     Create a POST endpoint to get questions based on a search term.
@@ -188,7 +188,7 @@ def create_app(test_config=None):
     categories in the left column will cause only questions of that
     category to be shown.
     '''
-    # well readme says it should be a post request 
+    # well readme says it should be a post request
     # but I see how it can be both
     # therefore see above, see also frontend code
 
