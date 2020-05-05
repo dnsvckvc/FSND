@@ -233,16 +233,12 @@ def create_app(test_config=None):
 
             cat_id = int(quiz_category['id'])
 
-            if quiz_category:
+            if quiz_category and cat_id != 0:
                 selection = Question.query.filter(
                               Question.category == quiz_category['id']).filter(
                               Question.id.notin_(previous_questions)
                             ).all()
-                # selection = Question.query.filter(
-                              # Question.category == quiz_category['id']).filter(
-                            # ).all()
             else:
-                # selection = Question.query.all()
                 selection = Question.query.filter(
                               Question.id.notin_(previous_questions)
                             ).all()
@@ -250,19 +246,12 @@ def create_app(test_config=None):
             current_questions = paginate_questions(request, selection)
 
             random_pick = random.choice(current_questions)
-            result = {'success': True,
-                            'previousQuestions': previous_questions.append(random_pick['id']),
-                            'result': random_pick}
-
-            print(result, flush=True)
-            print(random_pick, flush=True)
 
             return jsonify({'question': random_pick,
                             'success': True})
-        
+
         except:
             abort(404)
-
 
     '''
     @TODO:
