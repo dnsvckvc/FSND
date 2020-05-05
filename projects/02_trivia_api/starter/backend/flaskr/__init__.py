@@ -243,9 +243,12 @@ def create_app(test_config=None):
                               Question.id.notin_(previous_questions)
                             ).all()
 
-            current_questions = paginate_questions(request, selection)
-
-            random_pick = random.choice(current_questions)
+            if len(selection) > 0:
+                current_questions = paginate_questions(request, selection)
+                random_pick = random.choice(current_questions)
+            else:
+                random_pick = []
+                return jsonify({'success': True})
 
             return jsonify({'question': random_pick,
                             'success': True})
